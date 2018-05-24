@@ -8,6 +8,9 @@
 
 <link rel="stylesheet" href="/css/admin.css" type="text/css">
 
+<!-- 인스타그램 3rd party lib -->
+<script type="text/javascript" src="/javascript/instafeed.min.js"></script>
+
 <script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
 <script type="text/javascript">
 	function fncGetList(currentPage) {
@@ -39,8 +42,24 @@
 		$("#price_high").on("click", function(){
 			self.location = "/product/listProduct?sort=price+asc&menu=${param.menu}";
 		})
-				
+		
+		//popWin = window.open( "https://api.instagram.com/oauth/authorize/?client_id=be13cdcb5b6d42f9b06fd01ef6bb7c56&redirect_uri=http://localhost:8080&response_type=token",
+		//								"popWin", "width=500,height=500,scrollbars=no,scrolling=no,resizable=no");
+		//accessToken = 6200182633.be13cdc.39a95ed82d8348f59c320394d67f005c;
+		var userFeed = new Instafeed({
+		    get: 'user',
+		    userId: 6200182633, //accessToken 의 앞자리
+		    sortBy: "most-recent",
+		    limit: 5,
+		    template: '<a href="{{link}}" target="_blank"><img src="{{image}}" /></a>&nbsp;', 
+		    // {{link}} : 게시물 링크, {{image}} : 사진 url, {{caption}} : 게시물 텍스트
+		    accessToken: '6200182633.be13cdc.39a95ed82d8348f59c320394d67f005c'
+		});
+		 
+		userFeed.run();
+		
 		//$(".ct_list_pop td:nth-child(4n)" ).css("background-color" , "whitesmoke");
+		
 	})
 	
 	// 전체체크
@@ -253,19 +272,19 @@
 
 					<td class="ct_list_b" width="150">상품명
 						<c:if test="${requestScope.sort=='prod_no asc' || sort=='prod_name asc' || sort=='price asc' || sort=='price desc'}">
-							<span id="prodName_under">↓</span>
+							<span id="prodName_under"><a href="#">↓</a></span>
 						</c:if>
 						<c:if test="${requestScope.sort=='prod_name desc'}">
-							<span id="prodName_high">↑</span>
+							<span id="prodName_high"><a href="#">↑</a></span>
 						</c:if>
 					</td>
 					<td class="ct_line02"></td>
 					<td class="ct_list_b" width="150">가격
 						<c:if test="${requestScope.sort=='prod_no asc' || sort=='price asc' || sort=='prod_name asc' || sort=='prod_name desc'}">
-							<span id="price_under">↓</span>
+							<span id="price_under"><a href="#">↓</a></span>
 						</c:if>
 						<c:if test="${requestScope.sort=='price desc'}">
-							<span id="price_high">↑</span>
+							<span id="price_high"><a href="#">↑</a></span>
 						</c:if>
 
 					</td>
@@ -381,9 +400,14 @@
 				</tr>
 			</table>
 			<!-- PageNavigation End... -->
-
 		</form>
 
+		<!-- 인스타그램 --><br><br>
+		<div id="instagram" align="center">
+			<img src="/images/sns/instagram.PNG" width="30" height="30"> @vvh_avv
+			<div id="instafeed"></div>
+		</div>
+		
 	</div>
 </body>
 </html>

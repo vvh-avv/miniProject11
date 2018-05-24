@@ -126,10 +126,10 @@
 					<td class="ct_list_b" width="150">È¸¿øID
 						<c:choose>
 							<c:when test="${requestScope.sort=='asc'}">
-								<span id="under">¡é</span>
+								<span id="under"><a href="#">¡é</a></span>
 							</c:when>
 							<c:otherwise>
-								<span id="high">¡è</span>
+								<span id="high"><a href="#">¡è</a></span>
 							</c:otherwise>
 						</c:choose>
 						 <br>
