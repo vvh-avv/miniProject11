@@ -6,34 +6,18 @@
 
 <link rel="stylesheet" href="/css/admin.css" type="text/css">
 
+<!-- 카카오 로그인 -->
 <script src="//developers.kakao.com/sdk/js/kakao.min.js"></script>
-
+<!-- 네이버 로그인 -->
 <script src="https://static.nid.naver.com/js/naveridlogin_js_sdk_2.0.0.js"></script>
-
-<script>
-  window.fbAsyncInit = function() {
-    FB.init({
-      appId            : '141283403397328',
-      autoLogAppEvents : true,
-      xfbml            : true,
-      version          : 'v3.0'
-    });
-  };
-
-  (function(d, s, id){
-     var js, fjs = d.getElementsByTagName(s)[0];
-     if (d.getElementById(id)) {return;}
-     js = d.createElement(s); js.id = id;
-     js.src = "https://connect.facebook.net/en_US/sdk.js";
-     fjs.parentNode.insertBefore(js, fjs);
-   }(document, 'script', 'facebook-jssdk'));
-</script>
-
+<!-- 페이스북 로그인 -->
+<script src="https://connect.facebook.net/en_US/sdk.js"></script>
+<!-- 구글 로그인 -->
 <script src="https://apis.google.com/js/client:platform.js?onload=renderButton" async defer></script>
 <meta name="google-signin-client_id" content="1089144671013-46avnp2olvffg3g00lbdlpu3j7arps1q.apps.googleusercontent.com"></meta>
 
 
-<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
 <script type="text/javascript">
 	function fncLogin(){
 		var id = $("input:text").val();
@@ -89,8 +73,7 @@
 				}
 			}
 		}); //e.o.ajax
-		
-	}
+	}//e.o.fncLogin()
 	
 	$(function(){
 		$("#userId").focus();
@@ -189,48 +172,78 @@
 		naverLogin.init();
 	})//e.o.naver
 	
-	//페이스북 로그인
+	//페이스북 로그인	
 	$(function(){
-/* 		FB.login(function(response) {
-		    if (response.authResponse) {
-		     console.log('Welcome!  Fetching your information.... ');
-		     FB.api('/me', function(response) {
-		       console.log('Good to see you, ' + response.name + '.');
-		     });
-		    } else {
-		     console.log('User cancelled login or did not fully authorize.');
-		    }
-		}); */
-	    
-		$("#facebook-login-btn").on("click", function(){
-			alert("z");
-			FB.getLoginStatus(function(response){
-				alert(response.status);
-				statusChangeCallback(response);
-			});
-		}) 
+	    FB.init({
+	        appId            : '141283403397328',
+	        autoLogAppEvents : true,
+	        xfbml            : true,
+	        version          : 'v3.0'
+	    });
 		
-	});
+ 		$("#facebook-login-btn").on("click", function(){
+			FB.getLoginStatus(function(res) {
+			    //console(JSON.stringify(res));
+			    
+			    FB.api('/me?fields=name,picture', function(res) {
+				    res.id += "@f";
+				    
+			    	$.ajax({
+		            	  url : "/user/json/checkDuplication/"+res.id,
+		            	  headers : {
+		  					"Accept" : "application/json",
+		  					"Content-Type" : "application/json"
+		  				  },
+		  				  success : function(idChk){
+		  					  
+		  					  if(idChk==true){ //DB에 아이디가 없을 경우 => 회원가입
+		  						  console.log("회원가입중...");
+		  						  $.ajax({
+		  							  url : "/user/json/addUser",
+		  							  method : "POST",
+		  							  headers : {
+		  								"Accept" : "application/json",
+		  								"Content-Type" : "application/json"
+		  							  },
+		  							  data : JSON.stringify({
+		  								userId : res.id,
+		  								userName : res.name,
+		  								password : "facebook",
+		  							  }),
+		  							  success : function(JSONData){
+		  								 alert("회원가입이 정상적으로 되었습니다.");
+		  								 $("form").attr("method","POST").attr("action","/user/snsLogin/"+res.id).attr("target","_parent").submit();
+		  							  }
+		  						  })
+		  					  }
+		  					  if(idChk==false){ //DB에 아이디가 존재할 경우 => 로그인
+		  						  console.log("로그인중...");
+		  						  $("form").attr("method","POST").attr("action","/user/snsLogin/"+res.id).attr("target","_parent").submit();
+		  					  }
+		  				  }
+		              })
+			    }); //e.o.FB.api
+			}); //e.o.FB.getLoginStatus
+		})//e.o.onclick
+			
+		/*게시물 쓰기
+		FB.ui({
+			method		: 'feed',
+			name		: 'Facebook Dialogs',
+			link		: 'https://developers.facebook.com/docs/dialogs/',
+			picture		: 'http://fbrell.com/f8.jpg',
+			caption		: 'Reference Documentation',
+			description	: 'Dialogs provide a simple, consistent interface for applications to interface with users.'
+		}); */
 	
-/* 
-		$.ajax({
-			url : "https://www.facebook.com/v3.0/dialog/oauth?client_id={141283403397328}&redirect_uri={https://192.168.0.69:8080}",
-        	 	headers : {
-  				"Accept" : "application/json",
-  				"Content-Type" : "application/json"
-  			},
-			success : function(JSONData){
-				alert(JSONData);
-			}
-		})
-	})
-*/
+	});//e.o.facebook
+	
 	
 	//구글 로그인
 	$(function(){
 		function onSuccess(googleUser) {
 		    var profile = googleUser.getBasicProfile();
-		    //console.log(profile);
+		    console.log(profile);
 			    //Eea : "115795601565666831944"
 				//Paa : "https://lh5.googleusercontent.com/-sqhau76RDZY/AAAAAAAAAAI/AAAAAAAAAAA/AIcfdXBZz_7LYdiS_80Xsx3dz8B9di7T6Q/s96-c/photo.jpg"
 				//U3 : "wowjisoowow@gmail.com"
@@ -248,7 +261,7 @@
 		        	console.log(JSON.stringify(res));
 		        	
 		        	res.id += "@g";
-			              
+			        
 		            $.ajax({
 		            	url : "/user/json/checkDuplication/"+res.id,
 		            	headers : {
@@ -389,9 +402,9 @@
 
 												<!-- 페이스북 로그인 추가 -->
 												<div id="facebookLogin" align="center">
-													<fb id="facebook-login-btn" href="#">
-														<img src="/images/sns/facebook.PNG" onlogin="checkLoginState();">
-													</fb>
+ 													<a id="facebook-login-btn" href="#">
+														<img src="/images/sns/facebook.PNG">
+													</a>
 												</div>
 												
 												<!-- 구글 로그인 추가 -->
