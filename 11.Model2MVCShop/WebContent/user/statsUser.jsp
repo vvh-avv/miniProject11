@@ -1,12 +1,26 @@
 <%@ page language="java" contentType="text/html; charset=EUC-KR"  pageEncoding="EUC-KR"%>
+
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 
 <html>
 <head>
 <title>회원 통계</title>
 
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" >
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" >
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" ></script>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
-    <script type="text/javascript">
+
+<style>
+	body {
+		padding-top : 50px;
+	}
+</style>
+
+<script type="text/javascript">
       google.charts.load('current', {'packages':['corechart']});
       google.charts.setOnLoadCallback(drawChart);
 
@@ -26,9 +40,14 @@
         chart.draw(data, options);
       }
 </script>
+
 </head>
 
 <body>
- <div id="piechart" style="width: 900px; height: 500px;"></div>
+	<jsp:include page="/layout/toolbar.jsp" />
+	
+	<div class="container">
+		<div id="piechart" style="width: 900px; height: 500px;"></div>
+	</div>
 </body>
 </html>

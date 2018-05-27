@@ -2,13 +2,26 @@
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
+<!DOCTYPE html>
 <html>
 <head>
 <title>회원탈퇴</title>
 
-<link rel="stylesheet" href="/css/admin.css" type="text/css">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 
-<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" >
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" >
+<link rel="stylesheet" href="/css/admin.css" type="text/css">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" ></script>
+
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+
+<style>
+	body {
+		margin-top : 10px;
+	}
+</style>
+
 <script type="text/javascript">
 	$(function(){
 		//$("input:nth-of-type(3)") //$("input:radio:last)")
@@ -38,17 +51,17 @@
 </script>
 </head>
 
-<body bgcolor="#ffffff" text="#000000">
-
-	<form name="detailForm" method="post">
-		<h4>정말 탈퇴하시겠습니까?</h4>
+<body>
+	<form>
+ 		<h4>정말 탈퇴하시겠습니까?</h4>
 			탈퇴사유 : <br>
 			<input type="radio" name="reason" value="개인정보 때문에"><font size="2">개인정보 때문에</font><br>
 			<input type="radio" name="reason" value="마음에 드는 상품이 없어서"><font size="2">마음에 드는 상품이 없어서</font><br>
 			<input type="radio" name="reason" value="기타"><font size="2">기타</font>&nbsp;<input type="text" name="reasonText"><br>
 			<br>
-			<button id="submit" value="확인">확인</button> <!-- onclick="javascript:fncQuitCheck();" -->
-			<button id="close" value="취소">취소</button> <!-- onclick="javascript:window.close();" -->
+			
+			<button id="submit" value="확인">확인</button>
+			<button id="close" value="취소">취소</button>
 	</form>
 
 </body>

@@ -1,10 +1,16 @@
 <%@ page contentType="text/html; charset=euc-kr"%>
 
+<!DOCTYPE html>
 <html>
 <head>
 <title>로그인 화면</title>
 
-<link rel="stylesheet" href="/css/admin.css" type="text/css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" >
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" >
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" ></script>
 
 <!-- 카카오 로그인 -->
 <script src="//developers.kakao.com/sdk/js/kakao.min.js"></script>
@@ -16,8 +22,13 @@
 <script src="https://apis.google.com/js/client:platform.js?onload=renderButton" async defer></script>
 <meta name="google-signin-client_id" content="1089144671013-46avnp2olvffg3g00lbdlpu3j7arps1q.apps.googleusercontent.com"></meta>
 
+<style>
+	body > div.comtainer{
+		border : 3px solid #D6CDB7;
+		margin-top : 10px;
+	}
+</style>
 
-<script src="https://code.jquery.com/jquery-2.1.4.min.js"></script>
 <script type="text/javascript">
 	function fncLogin(){
 		var id = $("input:text").val();
@@ -85,11 +96,11 @@
 			}
 		});
 
-		$("img[src='/images/btn_login.gif']").on("click", function(){
+		$("button").on("click", function(){
 			fncLogin();
 		});
 
-		$("img[src='/images/btn_add.gif']").on("click", function(){
+		$("a.btn.btn-primary.btn").on("click", function(){
 			self.location="/user/addUser";
 		});
 		
@@ -133,7 +144,7 @@
 		  							  data : JSON.stringify({
   		  								userId : res.id,
 		  								userName : res.properties.nickname,
-  		  								password : "kakao123",
+  		  								password : "kakao",
 		  							  }),
 		  							  success : function(JSONData){
 		  								 alert("회원가입이 정상적으로 되었습니다.");
@@ -165,7 +176,7 @@
 	$(function(){
    		var naverLogin = new naver.LoginWithNaverId({
 			clientId: "NqLY8zfxRnZIl3CjoL1a",
-			callbackUrl: "/user/naverCallback.jsp",
+			callbackUrl: "http://192.168.0.69:8080/user/naverCallback.jsp",
 			isPopup: true,
 			loginButton: {color: "green", type: 3, height: 45}
 		});
@@ -180,50 +191,55 @@
 	        xfbml            : true,
 	        version          : 'v3.0'
 	    });
-		
- 		$("#facebook-login-btn").on("click", function(){
-			FB.getLoginStatus(function(res) {
-			    //console(JSON.stringify(res));
 			    
-			    FB.api('/me?fields=name,picture', function(res) {
-				    res.id += "@f";
-				    
-			    	$.ajax({
-		            	  url : "/user/json/checkDuplication/"+res.id,
-		            	  headers : {
-		  					"Accept" : "application/json",
-		  					"Content-Type" : "application/json"
-		  				  },
-		  				  success : function(idChk){
-		  					  
-		  					  if(idChk==true){ //DB에 아이디가 없을 경우 => 회원가입
-		  						  console.log("회원가입중...");
-		  						  $.ajax({
-		  							  url : "/user/json/addUser",
-		  							  method : "POST",
-		  							  headers : {
-		  								"Accept" : "application/json",
-		  								"Content-Type" : "application/json"
-		  							  },
-		  							  data : JSON.stringify({
-		  								userId : res.id,
-		  								userName : res.name,
-		  								password : "facebook",
-		  							  }),
-		  							  success : function(JSONData){
-		  								 alert("회원가입이 정상적으로 되었습니다.");
-		  								 $("form").attr("method","POST").attr("action","/user/snsLogin/"+res.id).attr("target","_parent").submit();
-		  							  }
-		  						  })
-		  					  }
-		  					  if(idChk==false){ //DB에 아이디가 존재할 경우 => 로그인
-		  						  console.log("로그인중...");
-		  						  $("form").attr("method","POST").attr("action","/user/snsLogin/"+res.id).attr("target","_parent").submit();
-		  					  }
-		  				  }
-		              })
-			    }); //e.o.FB.api
-			}); //e.o.FB.getLoginStatus
+ 		$("#facebook-login-btn").on("click", function(){
+  			FB.login(function(res){
+  				if(res.status=="connected"){
+  					 FB.api('/me?fields=name,picture', function(res) {
+  					    res.id += "@f";
+  					    
+  				    	$.ajax({
+  			            	  url : "/user/json/checkDuplication/"+res.id,
+  			            	  headers : {
+  			  					"Accept" : "application/json",
+  			  					"Content-Type" : "application/json"
+  			  				  },
+  			  				  success : function(idChk){
+  			  					  
+  			  					  if(idChk==true){ //DB에 아이디가 없을 경우 => 회원가입
+  			  						  console.log("회원가입중...");
+  			  						  $.ajax({
+  			  							  url : "/user/json/addUser",
+  			  							  method : "POST",
+  			  							  headers : {
+  			  								"Accept" : "application/json",
+  			  								"Content-Type" : "application/json"
+  			  							  },
+  			  							  data : JSON.stringify({
+  			  								userId : res.id,
+  			  								userName : res.name,
+  			  								password : "facebook",
+  			  							  }),
+  			  							  success : function(JSONData){
+  			  								 alert("회원가입이 정상적으로 되었습니다.");
+  			  								 $("form").attr("method","POST").attr("action","/user/snsLogin/"+res.id).attr("target","_parent").submit();
+  			  							  }
+  			  						  })
+  			  					  }
+  			  					  if(idChk==false){ //DB에 아이디가 존재할 경우 => 로그인
+  			  						  console.log("로그인중...");
+  			  						  $("form").attr("method","POST").attr("action","/user/snsLogin/"+res.id).attr("target","_parent").submit();
+  			  					  }
+  			  				  }
+  			              })
+  				    }); //e.o.FB.api
+  				} //e.o.FB.login
+ 			})
+ 			
+/* 			FB.getLoginStatus(function(res) {
+			    console.log(JSON.stringify(res));
+			}); //e.o.FB.getLoginStatus */
+			
 		})//e.o.onclick
 			
 		/*게시물 쓰기
@@ -241,7 +257,7 @@
 	
 	//구글 로그인
 	$(function(){
-		function onSuccess(googleUser) {
+ 		function onSuccess(googleUser) {
 		    var profile = googleUser.getBasicProfile();
 		    console.log(profile);
 			    //Eea : "115795601565666831944"
@@ -281,7 +297,7 @@
 		  							  data : JSON.stringify({
 		  								userId : res.id,
 		  								userName : res.displayName,
-		  								password : "google123",
+		  								password : "google",
 		  							  }),
 		  							  success : function(JSONData){
 		  								 alert("회원가입이 정상적으로 되었습니다.");
@@ -317,114 +333,84 @@
 
 </head>
 
-<body bgcolor="#ffffff" text="#000000">
+<body>
 
-	<form name="loginForm">
-
-		<div align="center">
-
-			<TABLE WITH="100%" HEIGHT="100%" BORDER="0" CELLPADDING="0" CELLSPACING="0">
-				<TR>
-					<TD ALIGN="CENTER" VALIGN="MIDDLE">
-						<table width="650" height="390" border="5" cellpadding="0" cellspacing="0" bordercolor="#D6CDB7">
-							<tr>
-								<td width="10" height="5" align="left" valign="top" bordercolor="#D6CDB7">
-									<table width="650" height="390" border="0" cellpadding="0" cellspacing="0">
-										<tr>
-											<td width="305"><img src="/images/logo-spring.png" width="305" height="390" /></td>
-											<td width="345" align="left" valign="top" background="/images/login02.gif">
-												<table width="100%" height="220" border="0" cellpadding="0" cellspacing="0">
-													<tr>
-														<td width="30" height="100">&nbsp;</td>
-														<td width="100" height="100">&nbsp;</td>
-														<td height="100">&nbsp;</td>
-														<td width="20" height="100">&nbsp;</td>
-													</tr>
-													<tr>
-														<td width="30" height="50">&nbsp;</td>
-														<td width="100" height="50"><img src="/images/text_login.gif" width="91" height="32" /></td>
-														<td height="50">&nbsp;</td>
-														<td width="20" height="50">&nbsp;</td>
-													</tr>
-													<tr>
-														<td width="200" height="50" colspan="4"></td>
-													</tr>
-													<tr>
-														<td width="30" height="30">&nbsp;</td>
-														<td width="100" height="30"><img src="/images/text_id.gif" width="100" height="30" /></td>
-														<td height="30"><input type="text" name="userId" id="userId" class="ct_input_g" style="width: 180px; height: 19px" maxLength='50' /></td>
-														<td width="20" height="30">&nbsp;</td>
-													</tr>
-													<tr>
-														<td width="30" height="30">&nbsp;</td>
-														<td width="100" height="30"><img src="/images/text_pas.gif" width="100" height="30" /></td>
-														<td height="30"><input type="password" name="password" id="password" class="ct_input_g" style="width: 180px; height: 19px" maxLength="50" /></td>
-														<td width="20" height="30">&nbsp;</td>
-													</tr>
-													<tr>
-														<td width="30" height="20">&nbsp;</td>
-														<td width="100" height="20">&nbsp;</td>
-														<td height="20" align="center">
-															<table width="136" height="20" border="0" cellpadding="0" cellspacing="0">
-																<tr>
-																	<td width="56">
-																		<img src="/images/btn_login.gif" width="56" height="20" border="0" />
-																	</td>
-																	<td width="10">&nbsp;</td>
-																	<td width="70">
-																		<img src="/images/btn_add.gif" width="70" height="20" border="0">
-																	</td>
-																</tr>
-															</table>
-																												
-														</td>
-														<td width="20" height="20">&nbsp;</td>
-													</tr>
-												</table>
+	<!-- ToolBar Start /////////////////////////////////////-->
+	<div class="navbar  navbar-default">
+        <div class="container">
+        	<a class="navbar-brand" href="/index.jsp">Model2 MVC Shop</a>
+   		</div>
+   	</div>
+   	<!-- ToolBar End /////////////////////////////////////-->	
+   	
+   	<div class="container">
+   		<div class="row">
+   			<div class="col-md-6">
+				<img src="/images/logo-spring.png" class="img-rounded" width="100%" />
+			</div>
+			<div class="col-md-6">
+				<br><br>
+				<div class="jumbotron">
+					<h1 class="text-center">로 &nbsp;&nbsp;그 &nbsp;&nbsp;인</h1>
+					
+					<form class="form-horizontal">
+						<div class="form-group">
+							<label for="userId" class="col-sm-4 control-label">아 이 디</label>
+							<div class="col-sm-6">
+								<input type="text" class="form-control" name="userId" id="userId"  placeholder="아이디" >
+							</div>
+						</div>
+						
+						<div class="form-group">
+							<label for="userId" class="col-sm-4 control-label">패 스 워 드</label>
+							<div class="col-sm-6">
+								<input type="password" class="form-control" name="password" id="password" placeholder="패스워드" >
+							</div>
+						</div>
+							
+						<!-- 로그인 실패 Ajax 처리 -->
+						<div id="message" align="center"></div><br>
+					
+						<div class="form-group">
+					    	<div class="col-sm-offset-4 col-sm-6 text-center">
+					    		<button type="button" class="btn btn-primary">로 &nbsp;그 &nbsp;인</button>
+					    		<a class="btn btn-primary btn" href="#" role="button">회 &nbsp;원 &nbsp;가 &nbsp;입</a>
+					  		</div>
+					  	</div>
+					</form>
+					
 												
-												<!-- 로그인 실패 Ajax 처리 --><br>
-												<div id="message" align="center"></div><br>
+					<!-- 카카오 로그인 추가 -->
+					<div id="kakaoLogin" align="center">
+						<a id="kakao-login-btn" href="#">
+							<img src="//k.kakaocdn.net/14/dn/btqbjxsO6vP/KPiGpdnsubSq3a0PHEGUK1/o.jpg" width="80%"/>
+						</a>
+						<a href="http://developers.kakao.com/logout"></a>
+					</div>
 												
-												<!-- 카카오 로그인 추가 -->
-												<div id="kakaoLogin" align="center">
-													<a id="kakao-login-btn" href="#">
-														<img src="//k.kakaocdn.net/14/dn/btqbjxsO6vP/KPiGpdnsubSq3a0PHEGUK1/o.jpg" width="80%"/>
-													</a>
-													<a href="http://developers.kakao.com/logout"></a>
-												</div>
-												
-												<!-- 네이버 로그인 추가 -->
-  												<div id="naverIdLogin" align="center">
-													<a id="naver-login-btn" href="#" role="button">
-														<img src="https://static.nid.naver.com/oauth/big_g.PNG" width="80%" height="45"/> 
-													</a>
-												</div>
+					<!-- 네이버 로그인 추가 -->
+  					<div id="naverIdLogin" align="center">
+						<a id="naver-login-btn" href="#" role="button">
+							<img src="https://static.nid.naver.com/oauth/big_g.PNG" width="80%" height="45"/> 
+						</a>
+					</div>
 
-												<!-- 페이스북 로그인 추가 -->
-												<div id="facebookLogin" align="center">
- 													<a id="facebook-login-btn" href="#">
-														<img src="/images/sns/facebook.PNG">
-													</a>
-												</div>
+					<!-- 페이스북 로그인 추가 -->
+					<div id="facebookLogin" align="center">
+ 						<a id="facebook-login-btn" href="#">
+							<img src="/images/sns/facebook.PNG">
+						</a>
+					</div>
 												
-												<!-- 구글 로그인 추가 -->
-												<div id="googleLogin" align="center">													
-													<div class="g-signin2" data-onsuccess="onSuccess" data-theme="dark"></div>
-												</div>
-												
-											</td>
-										</tr>
-									</table>
-								</td>
-							</tr>
-						</table>
-					</TD>
-				</TR>
-			</TABLE>
-
-		</div>
-
-	</form>
+					<!-- 구글 로그인 추가 -->
+					<div id="googleLogin" align="center">													
+						<div class="g-signin2" data-onsuccess="onSuccess" data-theme="dark"></div>
+					</div>
+					
+				</div>
+			</div>
+   		</div>
+   	</div>
 
 </body>
 </html>

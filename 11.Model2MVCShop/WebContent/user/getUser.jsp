@@ -2,26 +2,59 @@
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
+<!DOCTYPE html>
 <html>
 <head>
-<title>회원정보조회</title>
+<title>개인정보조회</title>
 
-<link rel="stylesheet" href="/css/admin.css" type="text/css">
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" >
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" >
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" ></script>
+
+<link href="/css/animate.min.css" rel="stylesheet">
+<link href="/css/bootstrap-dropdownhover.min.css" rel="stylesheet">
+
+<script src="/javascript/bootstrap-dropdownhover.min.js"></script>
+
+<style>
+	body {
+		padding-top : 50px;
+	}
+</style>
+
 <script type="text/javascript">
 	$(function(){
-		$("td.ct_btn01:contains('확인')").on("click", function(){
+		$("button:contains('확인')").on("click", function(){
 			//parent.location = "../index.jsp";
 			history.go(-1);
 		});
 
-		$("td.ct_btn01:contains('수정')").on("click", function(){
+		$("button:contains('수정')").on("click", function(){
 			self.location = "/user/updateUser?userId=${user.userId}"
 		});
 		
-		$("td.ct_btn01:contains('회원탈퇴')").on("click", function(){
-			popWin = window.open("/user/quitUserView.jsp","popWin", "left=300,top=200,width=300,height=200,marginwidth=0,marginheight=0,scrollbars=no,scrolling=no,menubar=no,resizable=no");
+		$("[name=reason][value='기타']").on("click",function(){
+			$("input:text[name=reasonText]").focus();
+		});
+		
+		$("#quitSubmit").on("click", function(){
+			var chkValue = $("input:checked").val();
+			
+			if( chkValue==null || (chkValue=="기타" && $("input:text[name=reasonText]").val()=="") ){
+				alert("사유는 반드시 입력해주시길 바랍니다.");
+			}else{
+				if(chkValue=="기타"){ chkValue = $("input:text[name=reasonText]").val(); }
+				
+				$.ajax({
+					url : "/user/quitUser?userId=${user.userId}&reason="+chkValue,
+					method : "POST"
+				});
+				self.location="/user/logout";
+				
+			}
 		});
 	});
 
@@ -29,134 +62,98 @@
 
 </head>
 
-<body bgcolor="#ffffff" text="#000000">
+<body>
 
-	<table width="100%" height="37" border="0" cellpadding="0"
-		cellspacing="0">
-		<tr>
-			<td width="15" height="37"><img src="/images/ct_ttl_img01.gif" width="15" height="37" /></td>
-			<td background="/images/ct_ttl_img02.gif" width="100%" style="padding-left: 10px;">
-				<table width="100%" border="0" cellspacing="0" cellpadding="0">
-					<tr>
-						<td width="93%" class="ct_ttl01">회원정보조회</td>
-						<td width="20%" align="right">&nbsp;</td>
-					</tr>
-				</table>
-			</td>
-			<td width="12" height="37"><img src="/images/ct_ttl_img03.gif" width="12" height="37" /></td>
-		</tr>
-	</table>
+	<!-- ToolBar Start /////////////////////////////////////-->
+	<jsp:include page="/layout/toolbar.jsp" />
+   	<!-- ToolBar End /////////////////////////////////////-->
 
-	<table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top: 13px;">
+	<div class="container">
+		<div class="page-header">
+			<h3 class=" text-info">개인정보조회</h3>
+	    	<h5 class="text-muted">내 정보를 <strong class="text-danger">최신정보로 관리</strong>해 주세요.</h5>
+		</div>
+		
+		<div class="row">
+			<div class="col-xs-4 col-md-2"><strong>아 이 디</strong></div>
+			<div class="col-xs-8 col-md-4">${user.userId}</div>
+		</div><hr>
+		
+		<div class="row">
+	  		<div class="col-xs-4 col-md-2 "><strong>이 름</strong></div>
+			<div class="col-xs-8 col-md-4">${user.userName}</div>
+		</div><hr>
+		
+		<div class="row">
+	  		<div class="col-xs-4 col-md-2 "><strong>주소</strong></div>
+			<div class="col-xs-8 col-md-4">${user.addr}</div>
+		</div><hr>
+		
+		<div class="row">
+	  		<div class="col-xs-4 col-md-2 "><strong>휴대전화번호</strong></div>
+			<div class="col-xs-8 col-md-4">${ !empty user.phone ? user.phone : ''}	</div>
+		</div><hr>
+		
+		<div class="row">
+	  		<div class="col-xs-4 col-md-2"><strong>이 메 일</strong></div>
+			<div class="col-xs-8 col-md-4">${user.email}</div>
+		</div><hr>
+		
+		<div class="row">
+	  		<div class="col-xs-4 col-md-2 "><strong>가입일자</strong></div>
+			<div class="col-xs-8 col-md-4">${user.regDate}</div>
+		</div><hr>
+		
+		<div class="row">
+	  		<div class="col-md-6 text-left ">
+				<!-- 회원탈퇴 모달창 버튼 -->
+				<button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+				  회원탈퇴
+				</button>
+				
+				<!-- 회원탈퇴 모달창 -->
+				<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+				  <div class="modal-dialog" role="document">
+				    <div class="modal-content">
+				      <div class="modal-header">
+				        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				        <h4 class="modal-title" id="myModalLabel">정말 탈퇴하시겠습니까?</h4>
+				      </div>
+				      <div class="modal-body">
+					   	탈퇴사유 : <br>
+					   	<div class="radio">
+						   	<label>
+							  <input type="radio" name="reason" value="개인정보 때문에"><font size="2">개인정보 때문에</font><br>
+							</label>
+						</div>
+						<div class="radio">
+							<label>
+							  <input type="radio" name="reason" value="마음에 드는 상품이 없어서"><font size="2">마음에 드는 상품이 없어서</font><br>
+							</label>
+						</div>
+						<div class="radio">
+							<label>
+							  <input type="radio" name="reason" value="기타"><font size="2">기타</font>&nbsp;<input type="text" name="reasonText"><br>
+							</label>
+						</div>
+					  </div>
+			 	      <div class="modal-footer">
+				        <button type="button" class="btn btn-default" data-dismiss="modal">닫기</button>
+				        <button type="button" class="btn btn-primary" id="quitSubmit">탈퇴</button>
+				      </div>
+				    </div>
+				  </div>
+				</div>
+	  		</div>
+		
+	  		<div class="col-md-6 text-right ">
+	  			<button type="button" class="btn btn-primary">수정</button>
+	  			<button type="button" class="btn btn-primary">확인</button>
+	  		</div>
+		
+		</div>
+	</div>
 
-		<tr>
-			<td height="1" colspan="3" bgcolor="D6D6D6"></td>
-		</tr>
-
-		<tr>
-			<td width="104" class="ct_write">아이디 <img src="/images/ct_icon_red.gif" width="3" height="3" align="absmiddle" />
-			</td>
-			<td bgcolor="D6D6D6" width="1"></td>
-			<td class="ct_write01">${user.userId}</td>
-		</tr>
-
-		<tr>
-			<td height="1" colspan="3" bgcolor="D6D6D6"></td>
-		</tr>
-
-		<tr>
-			<td width="104" class="ct_write">이름 <img src="/images/ct_icon_red.gif" width="3" height="3" align="absmiddle" />
-			</td>
-			<td bgcolor="D6D6D6" width="1"></td>
-			<td class="ct_write01">${user.userName}</td>
-		</tr>
-
-		<tr>
-			<td height="1" colspan="3" bgcolor="D6D6D6"></td>
-		</tr>
-
-		<tr>
-			<td width="104" class="ct_write">주소</td>
-			<td bgcolor="D6D6D6" width="1"></td>
-			<td class="ct_write01">${user.addr}</td>
-		</tr>
-
-		<tr>
-			<td height="1" colspan="3" bgcolor="D6D6D6"></td>
-		</tr>
-
-		<tr>
-			<td width="104" class="ct_write">휴대전화번호</td>
-			<td bgcolor="D6D6D6" width="1"></td>
-			<td class="ct_write01">${ !empty user.phone ? user.phone : ''}</td>
-		</tr>
-
-		<tr>
-			<td height="1" colspan="3" bgcolor="D6D6D6"></td>
-		</tr>
-
-		<tr>
-			<td width="104" class="ct_write">이메일</td>
-			<td bgcolor="D6D6D6" width="1"></td>
-			<td class="ct_write01">${user.email}</td>
-		</tr>
-
-		<tr>
-			<td height="1" colspan="3" bgcolor="D6D6D6"></td>
-		</tr>
-
-		<tr>
-			<td width="104" class="ct_write">가입일자</td>
-			<td bgcolor="D6D6D6" width="1"></td>
-			<td class="ct_write01">${user.regDate}</td>
-		</tr>
-
-		<tr>
-			<td height="1" colspan="3" bgcolor="D6D6D6"></td>
-		</tr>
-
-	</table>
-
-	<table width="100%" border="0" cellspacing="0" cellpadding="0"
-		style="margin-top: 10px;">
-		<tr>
-			<!-- 0423 회원탈퇴 -->
-			<td align="left">
-				<table border="0" cellspacing="0" cellpadding="0">
-					<tr>
-						<td width="17" height="23"><img src="/images/ct_btnbg01.gif" width="17" height="23" /></td>
-						<td background="/images/ct_btnbg02.gif" class="ct_btn01" style="padding-top: 3px;">
-							<!-- <a href="javascript:fncQuitUser();">회원탈퇴</a> -->
-							회원탈퇴
-						</td>
-						<td width="14" height="23"><img src="/images/ct_btnbg03.gif" width="14" height="23" /></td>
-						<td width="30"></td>
-					</tr>
-				</table>
-			</td>
-
-			<td width="53%"></td>
-
-			<td align="right">
-				<table border="0" cellspacing="0" cellpadding="0">
-					<tr>
-						<td width="17" height="23"><img src="/images/ct_btnbg01.gif" width="17" height="23" /></td>
-						<td background="/images/ct_btnbg02.gif" class="ct_btn01" style="padding-top: 3px;">
-							수정
-						</td>
-						<td width="14" height="23"><img src="/images/ct_btnbg03.gif" width="14" height="23" /></td>
-						<td width="30"></td>
-
-						<td width="17" height="23"><img src="/images/ct_btnbg01.gif" width="17" height="23" /></td>
-						<td background="/images/ct_btnbg02.gif" class="ct_btn01" style="padding-top: 3px;">
-							확인
-						</td>
-						<td width="14" height="23"><img src="/images/ct_btnbg03.gif" width="14" height="23" /></td>
-					</tr>
-				</table>
-			</td>
-		</tr>
-	</table>
 
 </body>
 </html>
