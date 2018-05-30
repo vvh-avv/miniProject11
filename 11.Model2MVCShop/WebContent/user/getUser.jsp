@@ -28,8 +28,8 @@
 <script type="text/javascript">
 	$(function(){
 		$("button:contains('확인')").on("click", function(){
-			//parent.location = "../index.jsp";
-			history.go(-1);
+			parent.location = "../index.jsp";
+			//history.go(-1);
 		});
 
 		$("button:contains('수정')").on("click", function(){

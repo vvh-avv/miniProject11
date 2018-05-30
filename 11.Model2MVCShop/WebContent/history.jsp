@@ -1,50 +1,68 @@
 <%@ page contentType="text/html; charset=EUC-KR"%>
 
+<!DOCTYPE html>
 <html>
 <head>
-<title>열어본 상품 보기</title>
+	<title>최근 본 상품</title>
 </head>
 
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" ></script>
+
+<style>
+	body{
+		position: fixed;
+		z-index: 999;
+	}
+</style>
+
+
 <body>
-당신이 열어본 상품을 알고 있다
-<br>
-<br>
-<%
-	request.setCharacterEncoding("euc-kr");
-	response.setCharacterEncoding("euc-kr");
-	
-	String history = null;
-	
-	Cookie[] cookies = request.getCookies();
-	
-	if (cookies!=null && cookies.length > 0) {
-		//System.out.println("==============================");
-		//System.out.println("1 쿠키가 존재합니다");
-		for (int i = 0; i < cookies.length; i++) {
-			Cookie cookie = cookies[i];
-			//System.out.println("2 어떤쿠키가 있나요? "+cookie.getName()+"의 "+cookie.getValue()+"값이 있네요!" );
-			if (cookie.getName().equals("history")) {
-				//System.out.println("3 히스토리 쿠키도 존재하네요! "+cookie.getValue());
-				history = cookie.getValue();
+	<br><br>
+	<h4>최근 본 상품</h4>
+	<br><br>
+	<%
+		String history = null;
+		
+		Cookie[] cookies = request.getCookies();
+		
+		if (cookies!=null && cookies.length > 0) {
+			for (int i = 0; i < cookies.length; i++) {
+				Cookie cookie = cookies[i];
+				if (cookie.getName().equals("history")) {
+					history = cookie.getValue();
+				}
 			}
-		}
-		if (history != null) {
-			//System.out.println("4 최종 히스토리는 null이 아닙니다");
-			String[] h = history.split(",");
-			for (int i = 0; i < h.length; i++) {
-				if (!h[i].equals("null")) {
-					//System.out.println("5 쪼갠 히스토리의 조각 중 null이 아닌게 있습니다. 출력할게요~");
-%>
-	<a href="/product/getProduct?prodNo=<%=h[i]%>&menu=search" target="rightFrame"><%=h[i]%></a>
-	<br>
-<%
+			if (history != null) {
+				String[] h = history.split(",");
+				for (int i = 0; i < h.length; i++) {
+					if (!h[i].equals("null")) {
+	%>
+		<script>
+			$.ajax({
+				url : "/product/json/getProduct/"+<%=h[i]%>,
+				success : function(Data){
+					$("#historyProdName"+<%=h[i]%>).text(Data.prodName);
+					if(Data.fileName==null){
+						$("#historyImg"+<%=h[i]%>).attr("src","http://placehold.it/100X100");
+					}else{
+						$("#historyImg"+<%=h[i]%>).attr("src","/images/uploadFiles/"+Data.fileName);
+					}
+				}
+			})
+		</script>
+		<div id="historyProdName<%=h[i]%>"></div>
+		<a href="/product/getProduct?prodNo=<%=h[i]%>&menu=search">
+			<img src="" height="100" width="100" id="historyImg<%=h[i]%>">
+		</a><br>
+	<%
+					}
 				}
 			}
 		}
-	}
-%>
-
+	%>
 <!-- ${cookie.history.value} -->
 <!-- ${cookie.JSESSIONID.value} -->
+
 </body>
 </html>

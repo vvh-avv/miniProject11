@@ -2,16 +2,29 @@
 
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core"%>
 
+<!DOCTYPE html>
 <html>
 <head>
-<title>상품관리 / 상품 목록조회</title>
+<title>상품목록</title>
 
-<link rel="stylesheet" href="/css/admin.css" type="text/css">
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" >
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" >
+<script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" ></script>
 
-<!-- 인스타그램 3rd party lib -->
-<script type="text/javascript" src="/javascript/instafeed.min.js"></script>
+<link href="/css/animate.min.css" rel="stylesheet">
+<link href="/css/bootstrap-dropdownhover.min.css" rel="stylesheet">
+<script src="/javascript/bootstrap-dropdownhover.min.js"></script>
 
-<script src="http://code.jquery.com/jquery-2.1.4.min.js"></script>
+<link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
+<script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
+
+<style>
+	body{
+		padding-top : 50px;
+	}
+</style>
+
 <script type="text/javascript">
 	function fncGetList(currentPage) {
 		$("#currentPage").val(currentPage);
@@ -19,13 +32,17 @@
 	}
 	
 	$(function(){
-		$("td.ct_btn01:contains('검색')").on("click", function(){
-			fncGetUserList(1);
+		$("button.btn.btn-default").on("click", function(){
+			fncGetList(1);
 		});
 		
-		$("input[name='delSubmit']").on("click", function(){
+		$("button[name='delSubmit']").on("click", function(){
 			 stateSubmit();
 		})
+		
+		$("#searchKeyword").on("keypress", function(event){
+			if(event.keyCode==13) { fncGetList('1'); }  
+		});
 		
 		$("#prodName_under").on("click", function(){
 			self.location = "/product/listProduct?sort=prod_name+desc&menu=${param.menu}";
@@ -43,22 +60,11 @@
 			self.location = "/product/listProduct?sort=price+asc&menu=${param.menu}";
 		})
 		
-		//popWin = window.open( "https://api.instagram.com/oauth/authorize/?client_id=be13cdcb5b6d42f9b06fd01ef6bb7c56&redirect_uri=http://localhost:8080&response_type=token",
-		//								"popWin", "width=500,height=500,scrollbars=no,scrolling=no,resizable=no");
-		//accessToken = 6200182633.be13cdc.39a95ed82d8348f59c320394d67f005c;
-		var userFeed = new Instafeed({
-		    get: 'user',
-		    userId: 6200182633, //accessToken 의 앞자리
-		    sortBy: "most-recent",
-		    limit: 5,
-		    template: '<a href="{{link}}" target="_blank"><img src="{{image}}" /></a>&nbsp;', 
-		    // {{link}} : 게시물 링크, {{image}} : 사진 url, {{caption}} : 게시물 텍스트
-		    accessToken: '6200182633.be13cdc.39a95ed82d8348f59c320394d67f005c'
-		});
-		 
-		userFeed.run();
-		
-		//$(".ct_list_pop td:nth-child(4n)" ).css("background-color" , "whitesmoke");
+		$("#myModal").on("show.bs.modal", function(event){
+			var button = $(event.relatedTarget);
+			var recipient = button.data('whatever');
+			$(this).find('.modal-body img').attr("src","/images/uploadFiles/"+recipient);
+		})
 		
 	})
 	
@@ -116,8 +122,8 @@
 	}
 	
 	//배송상태 체크
-	var stateIndex = $(".condition:selected").val();
-	var state = $(".condition").val();
+	var stateIndex = $("select[name='condition']:selected").val();
+	var state = $("select[name='condition']").val();
 	
 	if(prodList==""){
 		alert("상품을 선택 후 처리해주세요.");
@@ -150,188 +156,172 @@
 </script>
 </head>
 
-<body bgcolor="#ffffff" text="#000000">
+<body>
 
-	<div style="width: 98%; margin-left: 10px;">
+	<!-- ToolBar Start /////////////////////////////////////-->
+	<jsp:include page="/layout/toolbar.jsp" />
+	<!-- ToolBar End /////////////////////////////////////-->
 
-		<form name="detailForm">
-
-			<table width="100%" height="37" border="0" cellpadding="0" cellspacing="0">
-				<tr>
-					<td width="15" height="37"><img src="/images/ct_ttl_img01.gif" width="15" height="37" /></td>
-					<td background="/images/ct_ttl_img02.gif" width="100%" style="padding-left: 10px;">
-						<table width="100%" border="0" cellspacing="0" cellpadding="0">
-							<tr>
-								<c:if test="${param.menu=='manage'}">
-									<td width="93%" class="ct_ttl01">상품 관리</td>
-								</c:if>
-								<c:if test="${param.menu=='search'}">
-									<td width="93%" class="ct_ttl01">상품 목록조회</td>
-								</c:if>
-							</tr>
-						</table>
-					</td>
-					<td width="12" height="37"><img src="/images/ct_ttl_img03.gif" width="12" height="37" /></td>
-				</tr>
-			</table>
-
-
-			<table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top: 10px;">
-				<tr>
-
-					<!-- 서치할 데이터 입력값이 존재하는 경우 -->
-					<c:if test="${!empty search.searchCondition }">
-						<td align="right">
-						<select name="searchCondition" class="ct_input_g" style="width: 80px">
-								<!-- 어드민로 접속했을 경우에만 검색조건에 상품번호를 노출시키겠다  -->
+	<div class="container">
+		<div class="row"> <!-- 하나의 로우로 만들고 -->
+			<div class="col-md-2"> <!-- 여기엔 윙배너 집어넣기 -->
+				<jsp:include page="/history.jsp"/>
+			</div>
+			<div class="col-md-10"> <!-- 여기다 원래 폼 집어넣기 -->
+				<div class="page-header text-info">
+					<c:if test="${param.menu=='manage'}">
+						<h3>상품 관리</h3>
+					</c:if>
+					<c:if test="${param.menu=='search'}">
+						<h3>상품 목록조회</h3>
+					</c:if>
+				</div>
+				
+				<div class="row">
+					<div class="col-md-6 text-left">
+						<p class="text-primary">
+							전체  ${resultPage.totalCount } 건수, 현재 ${resultPage.currentPage}  페이지
+						</p>
+					</div>
+					
+					<div class="col-md-6 text-right">
+					    <form class="form-inline" name="detailForm">
+					    
+						  <div class="form-group">
+						    <select class="form-control" name="searchCondition" >
+						    	<!-- 어드민로 접속했을 경우에만 검색조건에 상품번호를 노출시키겠다  -->
 								<c:if test="${!empty user && user.role=='admin'}">
 									<option value="-1" ${search.searchCondition=='-1'?"selected":""}>주문번호</option>
 									<option value="0" ${search.searchCondition=='0'?"selected":""}>상품번호</option>
 								</c:if>
 								<option value="1" ${search.searchCondition=='1'?"selected":""}>상품명</option>
 								<option value="2" ${search.searchCondition=='2'?"selected":""}>상품가격</option>
-						</select>
-						<input type="text" name="searchKeyword" onkeypress="javascript:if(event.keyCode==13) fncGetList('1');" class="ct_input_g"
-													style="width: 200px; height: 19px" value="${param.searchKeyword}">
-						</td>
-					</c:if>
-
-					<!-- 서치할 데이터 입력값이 존재하지 않는 경우 -->
-					<c:if test="${empty search.searchCondition }">
-						<td align="right">
-						<select name="searchCondition" class="ct_input_g" style="width: 80px">
-								<!-- 어드민로 접속했을 경우에만 검색조건에 상품번호를 노출시키겠다  -->
-								<c:if test="${!empty user && user.role=='admin'}">
-									<option value="-1">주문번호</option>
-									<option value="0">상품번호</option>
-								</c:if>
-								<option value="1">상품명</option>
-								<option value="2">상품가격</option>
-						</select>
-						<input type="text" name="searchKeyword" class="ct_input_g" style="width: 200px; height: 19px"></td>
-					</c:if>
-
-					<td align="right" width="70">
-						<table border="0" cellspacing="0" cellpadding="0">
-							<tr>
-								<td width="17" height="23"><img src="/images/ct_btnbg01.gif" width="17" height="23"></td>
-								<td background="/images/ct_btnbg02.gif" class="ct_btn01" style="padding-top: 3px;">
-									검색
-								</td>
-								<td width="14" height="23"><img src="/images/ct_btnbg03.gif" width="14" height="23"></td>
-							</tr>
-						</table>
-					</td>
-				</tr>
-			</table>
-
-
-			<table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top: 10px;">
-				<tr>
-					<td colspan="15">전체 ${resultPage.totalCount} 건수, 현재 ${resultPage.currentPage} 페이지</td>
-				</tr>
-
-				<!-- 0420 체크박스 추가 -->
-				<c:if test="${!empty sessionScope.user && user.role=='admin'}">
-					<tr>
-						<td>&nbsp;</td>
-					</tr>
-					<tr>
-						<td colspan="15" align="right"> 선택한 상품을
-							<select class="condition" name="condition">
-								<option value="배송중">배송중</option>
-								<option value="반품">반품</option>
-								<option value="반품거절">반품거절</option>
-							</select> &nbsp;
-							<input type="button" name="delSubmit" value="처리">
-						</td>
-					</tr>
-					<tr>
-						<td>&nbsp;</td>
-					</tr>
+							</select>
+						  </div>
+						  
+						  <div class="form-group">
+						    <label class="sr-only" for="searchKeyword">검색어</label>
+						    <input type="text" class="form-control" id="searchKeyword" name="searchKeyword"  placeholder="검색어"
+						    			 value="${! empty search.searchKeyword ? search.searchKeyword : '' }" >
+						  </div>
+						  
+						  <button type="button" class="btn btn-default">검색</button>
+						  
+						  <!-- PageNavigation 선택 페이지 값을 보내는 부분 -->
+						  <input type="hidden" id="currentPage" name="currentPage" value="${resultPage.currentPage}"/>
+						  
+						</form>
+			    	</div>
+				</div>
+				
+				<div>&nbsp;</div>
+				
+				<c:if test="${sessionScope.user.role=='admin'}">
+				<form class="form-inline">
+				  <div class="form-group">
+				    <p class="form-control-static">선택한 상품을</p>
+				  </div>
+				  <div class="form-group">
+				    <select class="form-control" name="condition" >
+						<option value="배송중">배송중</option>
+						<option value="반품">반품</option>
+						<option value="반품거절">반품거절</option>
+					</select>
+				  </div>
+					<button type="button" class="btn btn-success" name="delSubmit" value="처리">처리</button>
+				</form>
 				</c:if>
-
-				<tr>
-					<td class="ct_list_b" width="100">
-						<!-- 0420 체크박스 추가 -->
-						<c:if test="${!empty sessionScope.user && user.role=='admin' }">
-							<input type="checkbox" name="prodListAll" value="prodAll" onclick="allChk(this);">
-						</c:if> No
-					</td>
-					<td class="ct_line02"></td>
-
-					<!-- 리스트에 상품이미지 노출 -->
-					<td class="ct_list_b">상품이미지</td>
-					<td class="ct_line02"></td>
-
-					<!-- 어드민로 접속했을 경우에만 주문번호를 노출시키겠다  -->
-					<c:if test="${!empty user && user.role=='admin'}">
-						<td class="ct_list_b" width="100">상품번호</td>
-						<td class="ct_line02"></td>
-					</c:if>
-
-					<td class="ct_list_b" width="150">상품명
-						<c:if test="${requestScope.sort=='prod_no asc' || sort=='prod_name asc' || sort=='price asc' || sort=='price desc'}">
-							<span id="prodName_under"><a href="#">↓</a></span>
-						</c:if>
-						<c:if test="${requestScope.sort=='prod_name desc'}">
-							<span id="prodName_high"><a href="#">↑</a></span>
-						</c:if>
-					</td>
-					<td class="ct_line02"></td>
-					<td class="ct_list_b" width="150">가격
-						<c:if test="${requestScope.sort=='prod_no asc' || sort=='price asc' || sort=='prod_name asc' || sort=='prod_name desc'}">
-							<span id="price_under"><a href="#">↓</a></span>
-						</c:if>
-						<c:if test="${requestScope.sort=='price desc'}">
-							<span id="price_high"><a href="#">↑</a></span>
-						</c:if>
-
-					</td>
-					<td class="ct_line02"></td>
-					<td class="ct_list_b">등록일</td>
-					<td class="ct_line02"></td>
-					<td class="ct_list_b">현재상태</td>
-				</tr>
-				<tr>
-					<td colspan="15" bgcolor="808285" height="1"></td>
-				</tr>
-
-				<!-- product -->
-				<c:set var="i" value="0" />
-				<c:forEach var="product" items="${list}">
-					<c:set var="i" value="${ i+1 }" />
-
-					<tr class="ct_list_pop">
-						<td align="center">
-							<!-- 0420 체크박스 추가 -->
-							<c:if test="${!empty sessionScope.user && user.role=='admin' }">
-								<input type="checkbox" name="prodList" value="${product.prodNo}+${product.proTranCode}">
+				
+				<table class="table table-hover table-striped">
+					<thead>
+						<tr>
+							<th align="center">
+								<c:if test="${sessionScope.user.role=='admin'}">
+								  <label class="checkbox-inline">
+									  <input type="checkbox" name="prodListAll" value="prodAll" onclick="allChk(this);"> No
+								  </label>
+								</c:if>
+								
+								<c:if test="${sessionScope.user.role!='admin'}">
+									No
+								</c:if>
+							</th>
+							<th align="left">상품이미지</th>
+							<c:if test="${user.role=='admin'}">
+								<th align="left">상품번호</th>
 							</c:if>
-							<c:if test="${resultPage.currentPage=='1'}"> ${i} </c:if>
-							<c:if test="${resultPage.currentPage!='1'}"> ${(i+resultPage.pageSize*(resultPage.currentPage-1))} </c:if>
-						</td>
-						<td></td>
-
-						<!-- 리스트에 상품이미지 노출 -->
-						<td align="center">
+							<th align="left">상품명
+								<c:if test="${requestScope.sort=='prod_no asc' || sort=='prod_name asc' || sort=='price asc' || sort=='price desc'}">
+									<a href="#"><span id="prodName_under" class="glyphicon glyphicon-chevron-down"></span></a>
+								</c:if>
+								<c:if test="${requestScope.sort=='prod_name desc'}">
+									<a href="#"><span id="prodName_high" class="glyphicon glyphicon-chevron-up"></span></a>
+								</c:if>
+							</th>
+							<th align="left">가격
+								<c:if test="${requestScope.sort=='prod_no asc' || sort=='price asc' || sort=='prod_name asc' || sort=='prod_name desc'}">
+									<a href="#"><span id="price_under" class="glyphicon glyphicon-chevron-down"></span></a>
+								</c:if>
+								<c:if test="${requestScope.sort=='price desc'}">
+									<a href="#"><span id="price_high" class="glyphicon glyphicon-chevron-up"></span></a>
+								</c:if>
+							</th>
+							<th align="left">등록일</th>
+							<th align="left">현재상태</th>
+						</tr>
+					</thead>
+					
+					<tbody>
+					  <c:set var="i" value="0" />
+					  <c:forEach var="product" items="${list}">
+						<c:set var="i" value="${ i+1 }" />
+						<tr>
+						  <td align="left">
+						  	<c:if test="${sessionScope.user.role=='admin'}">
+							  <label class="checkbox-inline">
+								  <input type="checkbox" name="prodList" value="${product.prodNo}+${product.proTranCode}">
+								  <c:if test="${resultPage.currentPage=='1'}"> ${i} </c:if>
+								  <c:if test="${resultPage.currentPage!='1'}"> ${(i+resultPage.pageSize*(resultPage.currentPage-1))} </c:if>
+							  </label>
+							  </c:if>
+							  
+							  <c:if test="${sessionScope.user.role!='admin'}">
+								  <c:if test="${resultPage.currentPage=='1'}"> ${i} </c:if>
+								  <c:if test="${resultPage.currentPage!='1'}"> ${(i+resultPage.pageSize*(resultPage.currentPage-1))} </c:if>
+							  </c:if>
+						  </td>
+						  <td align="left">
+							<!-- 이미지가 없는 경우 -->
+							<input type="hidden" value="{product.fileName}" id="hiddenName">
 							<a href="#">
-								<!-- 이미지가 없는 경우 -->
 								<c:if test="${empty product.fileName}"><img src="http://placehold.it/50X50"/></c:if>
-								<!-- 이미지가 있는 경우 -->
+							</a>
+							<!-- 이미지가 있는 경우 -->
+							<a role="button" data-toggle="modal" data-target="#myModal" data-whatever="${product.fileName}">
 								<c:if test="${!empty product.fileName}"><img src="/images/uploadFiles/${product.fileName}" width="50" height="50"/></c:if>
 							</a>
-						</td>
-						<td></td>
-
-						<!-- 어드민으로 접속했을 경우에만 상품번호를 노출시키겠다  -->
-						<c:if test="${!empty user && user.role=='admin'}">
-							<td align="center">${product.prodNo}</td>
-							<td></td>
-						</c:if>
-
-						<td align="left">
-							<!-- 판매중 상품이라면 -->
+							
+							<!-- 이미지 모달창 -->
+							<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel">
+							  <div class="modal-dialog" role="document">
+							    <div class="modal-content">
+							      <div class="modal-header">
+							        <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+							        <h4 class="modal-title" id="myModalLabel">상품이미지 크게보기</h4>
+							      </div>
+							      <div class="modal-body">
+							      	<img width="500" height="500" />
+								  </div>				 	      
+							    </div>
+							  </div>
+							</div>	
+						  </td>
+						  
+						  <c:if test="${sessionScope.user.role=='admin'}">
+						  	<td align="left">${product.prodNo}</td>
+						  </c:if>
+						  <td align="left"  title="Click : 상품정보 확인">
+						  	<!-- 판매중 상품이라면 -->
 							<c:if test="${product.proTranCode=='0' || product.proTranCode=='-1'}">
 								<a href="${param.menu=='manage'?'/product/updateProduct':'/product/getProduct'}?prodNo=${product.prodNo}&menu=${param.menu}&status=0">${product.prodName}</a>
 							</c:if>
@@ -339,15 +329,11 @@
 							<c:if test="${product.proTranCode!='0' && product.proTranCode!='-1'}">
 								<a href="${param.menu=='manage'?'/product/updateProduct':'/product/getProduct'}?prodNo=${product.prodNo}&menu=${param.menu}">${product.prodName}</a>
 							</c:if>
-						</td>
-						
-						<td></td>
-						<td align="left">${product.price}</td>
-						<td></td>
-						<td align="left">${product.regDate}</td>
-						<td></td>
-						<td align="left">
-							<!-- 어드민으로 접속했을 경우 -->
+						  </td>
+						  <td align="left">${product.price}</td>
+						  <td align="left">${product.regDate}</td>
+						  <td align="left">
+						  	<!-- 어드민으로 접속했을 경우 -->
 							<c:if test="${!empty user && user.role=='admin'}">
 								<c:choose>
 									<c:when test="${product.proTranCode.trim()=='0' || product.proTranCode.trim()=='-1'}">
@@ -381,33 +367,26 @@
 									</c:when>
 								</c:choose>
 							</c:if>
-
-						</td>
-					</tr>
-					<tr>
-						<td colspan="15" bgcolor="D6D7D6" height="1"></td>
-					</tr>
-				</c:forEach>
-			</table>
-
-			<!-- PageNavigation Start... -->
-			<table width="100%" border="0" cellspacing="0" cellpadding="0" style="margin-top: 10px;">
-				<tr>
-					<td align="center">
-						<input type="hidden" id="currentPage" name="currentPage" value="" />
-						<jsp:include page="../common/pageNavigator.jsp" />
-					</td>
-				</tr>
-			</table>
-			<!-- PageNavigation End... -->
-		</form>
-
-		<!-- 인스타그램 --><br><br>
-		<div id="instagram" align="center">
-			<img src="/images/sns/instagram.PNG" width="30" height="30"> @vvh_avv
-			<div id="instafeed"></div>
-		</div>
+						  </td>
+						</tr>
+			          </c:forEach>
+			        </tbody>
+				</table>
+			</div>
+			
+		</div><!--하나의로우를만들고end-->
 		
-	</div>
+		<div class="row"><!--푸터로우-->
+			<!-- PageNavigation Start... -->
+			<jsp:include page="../common/pageNavigator_new.jsp"/>
+			<!-- PageNavigation End... -->
+		
+			<br><br>
+			<!-- 인스타그램 -->
+			<jsp:include page="../layout/instagram.jsp"/>
+		</div><!--푸터로우end-->
+		
+	</div><!--e.o.container-->
+		
 </body>
 </html>

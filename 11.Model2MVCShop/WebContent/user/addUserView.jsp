@@ -12,6 +12,8 @@
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" ></script>
 
+<script src="http://dmaps.daum.net/map_js_init/postcode.v2.js"></script>
+
 <style>
 	body > div.container{
 		border : 3px solid #D6CDB7;
@@ -54,8 +56,7 @@
 		}
 		$("input:hidden[name='phone']").val( value );
 
-		if( $("#idMessage").text()=="사용가능한 아이디입니다." && $("#pwdMessage").text()=="비밀번호가 일치합니다."
-				&&$("#emailMessage".text()!="이메일 형식이 아닙니다.")){
+		if( $("#idMessage").text()=="사용가능한 아이디입니다." && $("#pwdMessage").text()=="비밀번호가 일치합니다." && $("#emailMessage".text()!="이메일 형식이 아닙니다.")){
 			$("form").attr("method" , "POST").attr("action" , "/user/addUser").submit();
 		}else{
 			alert("입력한 정보를 다시 확인해주시길 바랍니다.")
@@ -77,12 +78,18 @@
 			$("input[name='phone2']").focus();	
 		})
 		
-		$("input[name='email']").on("change" , function() {
-			var email=$("input[name='email']").val();
-		    
-			if(email != "" && (email.indexOf('@') < 1 || email.indexOf('.') == -1) ){
-				$("#emailMessage").text("이메일 형식이 아닙니다.").css("color","red");
-			}
+		$("input[name='email']").on("keyup" , function() {
+			var email = $("input[name='email']").val();
+			
+			$.ajax({
+				success : function(){
+					if(email != "" && (email.indexOf('@') < 1 || email.indexOf('.') == -1) ){
+						$("#emailMessage").text("이메일 형식이 아닙니다.").css("color","red");
+					}else{
+						$("#emailMessage").text("");
+					}
+				}
+			})
 		})
 		
 		$("a[href='#']").on("click" , function() {
@@ -122,6 +129,14 @@
 			})
 		})
 		
+		$("#addr").on("mousedown", function(){
+		    new daum.Postcode({
+		        oncomplete: function(data) {
+		        	$("#addr").val(data.address);
+		        }
+		    }).open();
+		})
+		
 	});
 	
 </script>
@@ -149,7 +164,7 @@
 		      <input type="text" class="form-control" id="userId" name="userId" placeholder="아이디">
 		       <span id="idMessage"></span>
 		    </div>
-		  </div>
+		</div>
 		  
 		  <div class="form-group">
 		    <label for="password" class="col-sm-offset-1 col-sm-3 control-label">비밀번호</label>

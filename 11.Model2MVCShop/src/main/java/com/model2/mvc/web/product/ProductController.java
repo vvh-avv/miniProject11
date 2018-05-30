@@ -110,7 +110,7 @@ public class ProductController {
 		Product product = productService.getProduct(prodNo);
 		
 		model.addAttribute("product", product);
-		
+
 		//쿠키 추가
 		String history = null;
 		Cookie[] c = request.getCookies();
@@ -122,9 +122,24 @@ public class ProductController {
 				}
 			}
 		}
+		//예외처리
+		if(history!=null) {
+			for( String hiss : history.split(",") ) {
+				if(hiss.contains(Integer.toString(product.getProdNo()))) { //중복 될 경우 추가안함
+					return "forward:/product/detailProduct.jsp";
+				}
+			}
+
+			if(history.length()>16) { //상품이 3개 이상 담겼을 경우
+				history.split(",")[0]=Integer.toString(product.getProdNo());
+				CookieGenerator cg = new CookieGenerator();
+				cg.setCookieName("history");
+				cg.addCookie(response, history);
+				
+				return "forward:/product/detailProduct.jsp";
+			}
+		}
 		history += "," + product.getProdNo();
-		//Cookie cookie = new Cookie("history",history);
-		//response.addCookie(cookie);
 		CookieGenerator cg = new CookieGenerator();
 		cg.setCookieName("history");
 		cg.addCookie(response, history);

@@ -14,6 +14,11 @@
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" ></script>
 <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
 
+<link href="/css/animate.min.css" rel="stylesheet">
+<link href="/css/bootstrap-dropdownhover.min.css" rel="stylesheet">
+
+<script src="/javascript/bootstrap-dropdownhover.min.js"></script>
+
 <style>
 	body {
 		padding-top : 50px;

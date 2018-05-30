@@ -45,6 +45,9 @@
 		
 		$( "td:nth-child(2)" ).css("color" , "red");
 		
+		$("#searchKeyword").on("keypress", function(event){
+			if(event.keyCode==13) { fncGetList('1'); }  
+		});
 		
 		$("button").on("click", function(){
 			self.location="/purchase/listPurchase?userId="+$(this).next().val();
@@ -70,7 +73,7 @@
 						+"</h6>";
 						
 						$("h6").remove();
-						$( "#"+userId+"" ).html(displayValue);
+						$("#info").html(displayValue);
 				}
 			})//e.o.ajax
 		});
@@ -121,8 +124,7 @@
 				  <div class="form-group">
 				    <label class="sr-only" for="searchKeyword">검색어</label>
 				    <input type="text" class="form-control" id="searchKeyword" name="searchKeyword"  placeholder="검색어"
-				    			 value="${! empty search.searchKeyword ? search.searchKeyword : '' }"
-				    			 onkeypress="javascript:if(event.keyCode==13) fncGetList('1');"  >
+				    			 value="${! empty search.searchKeyword ? search.searchKeyword : '' }">
 				  </div>
 				  
 				  <button type="button" class="btn btn-default">검색</button>
@@ -137,14 +139,14 @@
    		<table class="table table-hover table-striped">
 	   		<thead>
 	          <tr>
-	            <th align="center">No</th>
+	            <th align="left">No</th>
 	            <th align="left" >회원 ID
 	            	<c:choose>
 						<c:when test="${requestScope.sort=='asc'}">
-							<span id="under"><a href="#">↓</a></span>
+							<a href="#"><span id="under" class="glyphicon glyphicon-chevron-down"></span></a>
 						</c:when>
 						<c:otherwise>
-							<span id="high"><a href="#">↑</a></span>
+							<a href="#"><span id="high" class="glyphicon glyphicon-chevron-up"></span></a>
 						</c:otherwise>
 					</c:choose>
 	            </th>
@@ -169,7 +171,7 @@
 				  	<input type="hidden" value="${user.userId}">
 				  </td>
 				  <td align="left">
-				  	<i class="glyphicon glyphicon-ok" id= "${user.userId}"></i>
+				  	<i class="glyphicon glyphicon-ok" id="info"></i>
 				  	<input type="hidden" value="${user.userId}">
 				  </td>
 				</tr>

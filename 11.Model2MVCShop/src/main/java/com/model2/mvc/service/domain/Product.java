@@ -2,7 +2,6 @@ package com.model2.mvc.service.domain;
 
 import java.sql.Date;
 
-
 public class Product {
 	
 	private String fileName;

@@ -33,7 +33,7 @@
 
 	<update id="updateUser" parameterType="user">
 		UPDATE users
-		SET user_name=#{userName}, cell_phone=#{phone}, addr=#{addr}, email=#{email}
+		SET user_name=#{userName}, password=#{password}, cell_phone=#{phone}, addr=#{addr}, email=#{email}
 		WHERE user_id = #{userId}
 	</update>
 	
