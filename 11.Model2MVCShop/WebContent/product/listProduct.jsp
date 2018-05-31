@@ -7,6 +7,10 @@
 <head>
 <title>상품목록</title>
 
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<link rel="shortcut icon" href="/images/common/favicon.ico">
+
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" >
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" >
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
@@ -251,20 +255,24 @@
 								<th align="left">상품번호</th>
 							</c:if>
 							<th align="left">상품명
+								<a href="#">
 								<c:if test="${requestScope.sort=='prod_no asc' || sort=='prod_name asc' || sort=='price asc' || sort=='price desc'}">
-									<a href="#"><span id="prodName_under" class="glyphicon glyphicon-chevron-down"></span></a>
+									<span id="prodName_under" class="glyphicon glyphicon-chevron-down"></span>
 								</c:if>
 								<c:if test="${requestScope.sort=='prod_name desc'}">
-									<a href="#"><span id="prodName_high" class="glyphicon glyphicon-chevron-up"></span></a>
+									<span id="prodName_high" class="glyphicon glyphicon-chevron-up"></span>
 								</c:if>
+								</a>
 							</th>
 							<th align="left">가격
+								<a href="#">
 								<c:if test="${requestScope.sort=='prod_no asc' || sort=='price asc' || sort=='prod_name asc' || sort=='prod_name desc'}">
-									<a href="#"><span id="price_under" class="glyphicon glyphicon-chevron-down"></span></a>
+									<span id="price_under" class="glyphicon glyphicon-chevron-down"></span>
 								</c:if>
 								<c:if test="${requestScope.sort=='price desc'}">
-									<a href="#"><span id="price_high" class="glyphicon glyphicon-chevron-up"></span></a>
+									<span id="price_high" class="glyphicon glyphicon-chevron-up"></span>
 								</c:if>
+								</a>
 							</th>
 							<th align="left">등록일</th>
 							<th align="left">현재상태</th>

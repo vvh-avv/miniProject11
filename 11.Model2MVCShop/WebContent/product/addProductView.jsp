@@ -7,6 +7,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+<link rel="shortcut icon" href="/images/common/favicon.ico">
+
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" >
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" >
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
@@ -18,7 +20,6 @@
 <link rel="stylesheet" href="//code.jquery.com/ui/1.12.1/themes/base/jquery-ui.css">
 <link rel="stylesheet" href="/resources/demos/style.css">
 <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.js"></script>
-<!-- <script type="text/javascript" src="../javascript/calendar.js"></script> -->
 
 <style>
 	body > div.container{
@@ -65,9 +66,9 @@
 		$("button.btn.btn-primary:contains('µî·Ï')").on("click", function(){
 			fncAddProduct();
 		})
-		
-		$("#manuDate").datepicker({
-	    });
+	    
+        $("#manuDate").datepicker();
+        $("#manuDate").datepicker("option", "dateFormat", "yymmdd");
 		
 	 	//$("input[name='price']").on("keyup", function(){
 		//$("input[name='price']").val( FormatNumber3($("input[name='price']").val()) );

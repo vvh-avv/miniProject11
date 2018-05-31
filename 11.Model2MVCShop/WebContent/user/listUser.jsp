@@ -9,6 +9,8 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
+<link rel="shortcut icon" href="/images/common/favicon.ico">
+
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" >
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" >
 <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
@@ -43,7 +45,6 @@
 			 self.location ="/user/getUser?userId="+$(this).text().trim();
 		});
 		
-		$( "td:nth-child(2)" ).css("color" , "red");
 		
 		$("#searchKeyword").on("keypress", function(event){
 			if(event.keyCode==13) { fncGetList('1'); }  
@@ -136,19 +137,23 @@
 	    	</div>
    		</div>
    		
+   		<br>
+   		
    		<table class="table table-hover table-striped">
 	   		<thead>
 	          <tr>
 	            <th align="left">No</th>
 	            <th align="left" >회원 ID
+	           	 	<a href="#">
 	            	<c:choose>
 						<c:when test="${requestScope.sort=='asc'}">
-							<a href="#"><span id="under" class="glyphicon glyphicon-chevron-down"></span></a>
+							<span id="under" class="glyphicon glyphicon-chevron-down"></span>
 						</c:when>
 						<c:otherwise>
-							<a href="#"><span id="high" class="glyphicon glyphicon-chevron-up"></span></a>
+							<span id="high" class="glyphicon glyphicon-chevron-up"></span>
 						</c:otherwise>
 					</c:choose>
+					</a>
 	            </th>
 	            <th align="left">회원명</th>
 	            <th align="left">이메일</th>
@@ -162,8 +167,8 @@
 			  <c:forEach var="user" items="${list}">
 				<c:set var="i" value="${ i+1 }" />
 				<tr>
-				  <td align="center">${ i }</td>
-				  <td align="left"  title="Click : 회원정보 확인">${user.userId}</td>
+				  <td align="left">${ i }</td>
+				  <td align="left"  title="Click : 회원정보 확인"><a href="#">${user.userId}</a></td>
 				  <td align="left">${user.userName}</td>
 				  <td align="left">${user.email}</td>
 				  <td align="left">

@@ -5,9 +5,11 @@
 <!DOCTYPE html>
 <html>
 <head>
-<title>회원 정보 수정</title>
+<title>회원정보 수정</title>
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+<link rel="shortcut icon" href="/images/common/favicon.ico">
 
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" >
 <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" >
