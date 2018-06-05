@@ -168,10 +168,12 @@
 
 	<div class="container">
 		<div class="row"> <!-- 하나의 로우로 만들고 -->
+			<div class="col-md-2"> <!-- 공백 -->
+			</div>
 			<div class="col-md-2"> <!-- 여기엔 윙배너 집어넣기 -->
 				<jsp:include page="/history.jsp"/>
 			</div>
-			<div class="col-md-10"> <!-- 여기다 원래 폼 집어넣기 -->
+			<div class="col-md-8"> <!-- 여기다 원래 폼 집어넣기 -->
 				<div class="page-header text-info">
 					<c:if test="${param.menu=='manage'}">
 						<h3>상품 관리</h3>
@@ -385,13 +387,16 @@
 		</div><!--하나의로우를만들고end-->
 		
 		<div class="row"><!--푸터로우-->
-			<!-- PageNavigation Start... -->
-			<jsp:include page="../common/pageNavigator_new.jsp"/>
-			<!-- PageNavigation End... -->
-		
-			<br><br>
-			<!-- 인스타그램 -->
-			<jsp:include page="../layout/instagram.jsp"/>
+			<div class="col-md-2"></div>
+			<div class="col-md-10">
+				<!-- PageNavigation Start... -->
+				<jsp:include page="../common/pageNavigator_new.jsp"/>
+				<!-- PageNavigation End... -->
+			
+				<br><br>
+				<!-- 인스타그램 -->
+				<jsp:include page="../layout/instagram.jsp"/>
+			</div>
 		</div><!--푸터로우end-->
 		
 	</div><!--e.o.container-->
