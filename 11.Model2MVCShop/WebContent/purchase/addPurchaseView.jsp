@@ -104,7 +104,7 @@
 			<div class="form-group">
 				<div class="col-xs-4 col-md-2"><strong>구매자아이디</strong></div>
 				<div class="col-xs-8 col-md-4">${user.userId}</div>
-				<input type="hidden" name="buyerId" value="${user.userId}"/>
+				<input type="hidden" name="userId" value="${user.userId}"/>
 			</div><hr>
 			
 			<div class="form-group">
@@ -115,41 +115,40 @@
 						<option value="2">신용구매</option>
 					</select>
 				</div>
-				<input type="hidden" name="buyerId" value="${user.userId}"/>
 			</div><hr>
 			
 			<div class="form-group">
-				<div class="col-xs-4 col-md-2"><strong>구매자이름</strong></div>
+				<div class="col-xs-4 col-md-2"><strong>받는 분 성함</strong></div>
 				<div class="col-xs-8 col-md-4">
 					<input type="text" class="form-control" id="receiverName" name="receiverName" placeholder="구매자이름" value="${user.userName}">
 				</div>
 			</div><hr>
 			
 			<div class="form-group">
-				<div class="col-xs-4 col-md-2"><strong>구매자연락처</strong></div>
+				<div class="col-xs-4 col-md-2"><strong>받는 분 연락처</strong></div>
 				<div class="col-xs-8 col-md-4">
 					<input type="text" class="form-control" id="receiverPhone" name="receiverPhone" placeholder="구매자연락처" value="${user.phone}">
 				</div>
 			</div><hr>
 			
 			<div class="form-group">
-				<div class="col-xs-4 col-md-2"><strong>구매자주소</strong></div>
+				<div class="col-xs-4 col-md-2"><strong>배송받을 주소</strong></div>
 				<div class="col-xs-8 col-md-4">
-					<input type="text" class="form-control" id="receiverAddr" name="receiverAddr" placeholder="구매자주소" value="${user.addr}">
+					<input type="text" class="form-control" id="divyAddr" name="divyAddr" placeholder="구매자주소" value="${user.addr}">
 				</div>
 			</div><hr>
 			
 			<div class="form-group">
-				<div class="col-xs-4 col-md-2"><strong>구매요청사항</strong></div>
+				<div class="col-xs-4 col-md-2"><strong>구매시 요청사항</strong></div>
 				<div class="col-xs-8 col-md-4">
-					<input type="text" class="form-control" id="receiverRequest" name="receiverRequest" placeholder="구매요청사항" >
+					<input type="text" class="form-control" id="divyRequest" name="divyRequest" placeholder="구매요청사항" >
 				</div>
 			</div><hr>
 			
 			<div class="form-group">
 				<div class="col-xs-4 col-md-2"><strong>배송희망일자</strong></div>
 				<div class="col-xs-8 col-md-4">
-					<input type="text" class="form-control" readonly="readonly" id="receiverDate" name="receiverDate">
+					<input type="text" class="form-control" readonly="readonly" id="divyDate" name="divyDate">
 				</div>
 			</div><hr>
 			

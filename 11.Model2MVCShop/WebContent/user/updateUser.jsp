@@ -50,7 +50,7 @@
 		if($("#pwdMessage").text()!="비밀번호가 일치하지 않습니다." && $("#emailMessage").text()!="이메일 형식이 아닙니다."){
 			$("form").attr("method", "POST").attr("action", "/user/updateUser").submit();
 		}else{
-			alert("입력한 정보를 다시 확인해주시길 바랍니다.")
+			alert("입력한 정보를 다시 확인해주시길 바랍니다.");
 		}
 	}
 	

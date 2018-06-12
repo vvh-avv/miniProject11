@@ -58,15 +58,18 @@
 		});
 		
 		$("#tc_cancle").on("click", function(){ //주문취소
-			$("form").attr("method", "POST").attr("action", "/purchase/updateTranCode?tranNo=${purchase.tranNo}&tranCode=-1").submit();
+			var tranNo = $(this).next().val();
+			$("form").attr("method", "POST").attr("action", "/purchase/updateTranCode?tranNo="+tranNo+"&tranCode=-1").submit();
 		})
 		
 		$("#tc_arrive").on("click", function(){ //물건도착
-			$("form").attr("method", "POST").attr("action", "/purchase/updateTranCode?tranNo=${purchase.tranNo}&tranCode=3").submit();
+			var tranNo = $(this).next().val();
+			$("form").attr("method", "POST").attr("action", "/purchase/updateTranCode?tranNo="+tranNo+"&tranCode=3").submit();
 		})
 		
 		$("#tc_return").on("click", function(){ //상품반품
-			$("form").attr("method", "POST").attr("action", "/purchase/updateTranCode?tranNo=${purchase.tranNo}&tranCode=-2").submit();
+			var tranNo = $(this).next().val();
+			$("form").attr("method", "POST").attr("action", "/purchase/updateTranCode?tranNo="+tranNo+"&tranCode=-2").submit();
 		})
 		
 		$("#tc_return>").css("color", "red");
@@ -163,28 +166,28 @@
 						<c:if test="${sessionScope.tranCodeTemp<0 || empty sessionScope.tranCodeTemp}">
 							<c:set var="tranCodeTemp" value="${purchase.tranCode}" scope="session" />
 						</c:if>
-							
+						
 						<c:choose>
 							<c:when test="${purchase.tranCode=='1'}">
 								현재 구매완료 상태입니다.
 								<!-- 0418 취소 기능 추가 -->
 								<span id="tc_cancle">
-									<a href="/purchase/updateTranCode?tranNo=${purchase.tranNo}&tranCode=-1">주문취소</a>
+									<a href="#">주문취소</a>
 								</span>
 							</c:when>
 							<c:when test="${purchase.tranCode=='2'}">
 								현재 배송중 상태입니다.
 								<span id="tc_arrive">
-									<a href="/purchase/updateTranCode?tranNo=${purchase.tranNo}&tranCode=3">배송중</a>
+									<a href="#">배송중</a>
 								</span>
 								<span id="tc_return">
-									<a href="/purchase/updateTranCode?tranNo=${purchase.tranNo}&tranCode=-2">상품반품</a>
+									<a href="#">상품반품</a>
 								</span>
 							</c:when>
 							<c:when test="${purchase.tranCode=='3'}">
 								현재 배송완료 상태입니다.
 								<span id="tc_return">
-									<a href="/purchase/updateTranCode?tranNo=${purchase.tranNo}&tranCode=-2">상품반품</a>
+									<a href="#">상품반품</a>
 								</span>
 							</c:when>
 							<c:when test="${purchase.tranCode=='-1'}">
@@ -197,6 +200,7 @@
 								현재 반품완료 상태입니다.
 							</c:when>
 							</c:choose>
+				  	<input type="hidden" value="${purchase.tranNo}">
 				  </td>
 	          </c:forEach>
    			</tbody>

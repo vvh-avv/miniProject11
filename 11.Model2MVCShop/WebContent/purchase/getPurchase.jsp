@@ -53,11 +53,6 @@
 		<div class="page-header">
 			<h3 class=" text-info">구매상세조회</h3>
 	    </div>
-	    
-		<div class="row">
-			<div class="col-xs-4 col-md-2"><strong>구매번호</strong></div>
-			<div class="col-xs-8 col-md-4">${purchase.tranNo}</div>
-		</div><hr>
 		
 		<div class="row">
 			<div class="col-xs-4 col-md-2"><strong>구매번호</strong></div>

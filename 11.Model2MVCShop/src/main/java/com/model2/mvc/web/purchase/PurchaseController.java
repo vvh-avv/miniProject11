@@ -21,6 +21,7 @@ import com.model2.mvc.service.domain.Purchase;
 import com.model2.mvc.service.domain.User;
 import com.model2.mvc.service.product.ProductService;
 import com.model2.mvc.service.purchase.PurchaseService;
+import com.model2.mvc.service.user.UserService;
 
 @Controller
 @RequestMapping("/purchase/*")
@@ -29,10 +30,12 @@ public class PurchaseController {
 	@Autowired
 	@Qualifier("purchaseServiceImpl")
 	private PurchaseService purchaseService;
-	
 	@Autowired
 	@Qualifier("productServiceImpl")
 	private ProductService productService;
+	@Autowired
+	@Qualifier("userServiceImpl")
+	private UserService userService;
 	
 	public PurchaseController() {
 		System.out.println(this.getClass());
@@ -59,13 +62,19 @@ public class PurchaseController {
 	}
 	
 	@RequestMapping(value="/purchase/addPurchase", method=RequestMethod.POST)
-	public ModelAndView addPurchase(@ModelAttribute("purchase") Purchase purchase, HttpSession session,
-													@RequestParam("prodNo") int prodNo) throws Exception{
+	public ModelAndView addPurchase(@ModelAttribute("purchase") Purchase purchase, @ModelAttribute("user") User user,
+													HttpSession session, @RequestParam("prodNo") int prodNo) throws Exception{
 		System.out.println("/purchase/addPurchase : POST");
 		
-		purchase.setBuyer((User)session.getAttribute("user"));
+		//purchase.setBuyer((User)session.getAttribute("user"));
+		purchase.setBuyer(userService.getUser(user.getUserId()));
 		purchase.setPurchaseProd(productService.getProduct(prodNo));
-		purchaseService.addPurchase(purchase);
+		
+		System.out.println("*user : "+user);
+		System.out.println("*prodNo : "+prodNo);
+		System.out.println("*purchase : "+purchase);
+		
+		//purchaseService.addPurchase(purchase);
 		
 		ModelAndView modelAndView = new ModelAndView();
 		modelAndView.addObject("purchase", purchase);

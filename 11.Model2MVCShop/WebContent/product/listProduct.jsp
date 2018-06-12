@@ -332,11 +332,11 @@
 						  </c:if>
 						  <td align="left"  title="Click : 상품정보 확인">
 						  	<!-- 판매중 상품이라면 -->
-							<c:if test="${product.proTranCode=='0' || product.proTranCode=='-1'}">
+							<c:if test="${product.proTranCode.trim()=='0' || product.proTranCode.trim()=='-1'}">
 								<a href="${param.menu=='manage'?'/product/updateProduct':'/product/getProduct'}?prodNo=${product.prodNo}&menu=${param.menu}&status=0">${product.prodName}</a>
 							</c:if>
 							<!-- 판매중 상품이 아니라면 -->
-							<c:if test="${product.proTranCode!='0' && product.proTranCode!='-1'}">
+							<c:if test="${product.proTranCode.trim()!='0' && product.proTranCode.trim()!='-1'}">
 								<a href="${param.menu=='manage'?'/product/updateProduct':'/product/getProduct'}?prodNo=${product.prodNo}&menu=${param.menu}">${product.prodName}</a>
 							</c:if>
 						  </td>
@@ -372,9 +372,9 @@
 									<c:when test="${product.proTranCode.trim()=='0' || product.proTranCode.trim()=='-1'}">
 										판매중
 									</c:when>
-									<c:when test="${product.proTranCode.trim()!='0'}">
+									<c:otherwise>
 										재고없음
-									</c:when>
+									</c:otherwise>
 								</c:choose>
 							</c:if>
 						  </td>
